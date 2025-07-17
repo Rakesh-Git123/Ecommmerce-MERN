@@ -59,7 +59,7 @@ const PlaceOrder = () => {
 
     try {
       setLoading(true);
-      let res=await axios.post('http://localhost:4000/api/order', payload, {
+      let res=await axios.post('https://ecommmerce-mern.onrender.com/api/order', payload, {
         headers: {
           Authorization: localStorage.getItem('token'),
         },

@@ -13,7 +13,7 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/auth", {
+      const response = await axios.get("https://ecommmerce-mern.onrender.com/api/auth", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
@@ -33,7 +33,7 @@ const Users = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:4000/api/auth/${id}`, {
+        await axios.delete(`https://ecommmerce-mern.onrender.com/api/auth/${id}`, {
           headers: {
             Authorization: localStorage.getItem("token"),
           },

@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/signup",
+        "https://ecommmerce-mern.onrender.com/api/auth/signup",
         userData
       );
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/auth/login",
+        "https://ecommmerce-mern.onrender.com/api/auth/login",
         userData
       );
 
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true)
     try {
       const res = await axios.get(
-        "http://localhost:4000/api/auth/checkAuth",
+        "https://ecommmerce-mern.onrender.com/api/auth/checkAuth",
         {
             headers: {
                 Authorization: localStorage.getItem("token"),

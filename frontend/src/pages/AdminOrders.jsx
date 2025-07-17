@@ -12,7 +12,7 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:4000/api/order', {
+      const res = await axios.get('https://ecommmerce-mern.onrender.com/api/order', {
         headers: { Authorization: localStorage.getItem('token') },
       });
       setOrders(res.data.orders || []);
@@ -26,7 +26,7 @@ const AdminOrders = () => {
   const updateStatus = async (id, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:4000/api/order/${id}/status`,
+        `https://ecommmerce-mern.onrender.com/api/order/${id}/status`,
         { status: newStatus },
         {
           headers: { Authorization: localStorage.getItem('token') },

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import AdminDashboard from "./AdminDashBoard";
+import AdminDashboard from "./AdminDashboard";
 import UserDashboard from "./UserDashboard";
 import { AuthContext } from "../Context/AuthContext";
 import ProtectedRoute from "../ProtectedRoute";

@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:4000/api/product/page",
+        "https://ecommmerce-mern.onrender.com/api/product/page",
         {
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -86,7 +86,7 @@ const AdminDashboard = () => {
       formData.append("image", newProduct.image);
 
       const response = await axios.post(
-        "http://localhost:4000/api/product",
+        "https://ecommmerce-mern.onrender.com/api/product",
         formData,
         {
           headers: {
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
       setError("");
 
       const response = await axios.patch(
-        `http://localhost:4000/api/product/${id}`,
+        `https://ecommmerce-mern.onrender.com/api/product/${id}`,
         {
           action,
         },
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
         setLoading(true);
         setError("");
 
-        await axios.delete(`http://localhost:4000/api/product/${id}`, {
+        await axios.delete(`https://ecommmerce-mern.onrender.com/api/product/${id}`, {
           headers: {
             Authorization: localStorage.getItem("token"),
           },

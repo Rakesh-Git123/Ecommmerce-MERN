@@ -44,7 +44,7 @@ const ForgetPassword = () => {
       const { email, oldPassword, newPassword } = formData;
 
       const response = await axios.patch(
-        "http://localhost:4000/api/auth/forgetPassword",
+        "https://ecommmerce-mern.onrender.com/api/auth/forgetPassword",
         {
           email,
           oldPassword,

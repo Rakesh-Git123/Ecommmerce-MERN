@@ -41,7 +41,7 @@ const Profile = () => {
 
     try {
       await axios.patch(
-        "http://localhost:4000/api/auth/updateProfile",
+        "https://ecommmerce-mern.onrender.com/api/auth/updateProfile",
         formData,
         {
           headers: {

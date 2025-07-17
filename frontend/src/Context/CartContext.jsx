@@ -10,7 +10,7 @@ export const CartProvider = ({ children }) => {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:4000/api/cart", {
+      const res = await axios.get("https://ecommmerce-mern.onrender.com/api/cart", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
@@ -30,7 +30,7 @@ export const CartProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/cart/add",
+        "https://ecommmerce-mern.onrender.com/api/cart/add",
         { productId, quantity },
         {
           headers: {
@@ -54,7 +54,7 @@ export const CartProvider = ({ children }) => {
   const updateCartItem = async ({ productId, action }) => {
     try {
       const res = await axios.put(
-        "http://localhost:4000/api/cart/update",
+        "https://ecommmerce-mern.onrender.com/api/cart/update",
         { productId, action },
         {
           headers: {
@@ -75,7 +75,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (productId) => {
     const id=productId;
     try {
-      const res = await axios.delete(`http://localhost:4000/api/cart/remove/${id}`, {
+      const res = await axios.delete(`https://ecommmerce-mern.onrender.com/api/cart/remove/${id}`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
@@ -92,7 +92,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart=async() =>{
     try {
-      const res = await axios.delete(`http://localhost:4000/api/cart/clear`, {
+      const res = await axios.delete(`https://ecommmerce-mern.onrender.com/api/cart/clear`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },

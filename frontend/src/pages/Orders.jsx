@@ -10,7 +10,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/order/my-orders', {
+      const response = await axios.get('https://ecommmerce-mern.onrender.com/api/order/my-orders', {
         headers: {
           Authorization: localStorage.getItem('token'),
         },

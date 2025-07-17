@@ -12,7 +12,7 @@ export const ProductProvider = ({ children }) => {
   const fetchProducts = async ({search="",category="",sortOrder}) => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:4000/api/product/category', {
+      const response = await axios.get('https://ecommmerce-mern.onrender.com/api/product/category', {
         headers: {
           Authorization: localStorage.getItem('token'),
         },

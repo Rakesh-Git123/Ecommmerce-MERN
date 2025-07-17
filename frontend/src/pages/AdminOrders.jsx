@@ -107,11 +107,18 @@ const AdminOrders = () => {
                     <span>₹{item.price * item.quantity}</span>
                   </div>
                 ))}
+
+                {/* Shipping Fee */}
+                <div className="flex justify-between text-sm text-gray-700 mt-2">
+                  <span>Shipping Fee</span>
+                  <span>₹10</span>
+                </div>
               </div>
 
+              {/* Final Total */}
               <div className="flex justify-between mt-4 font-semibold text-lg">
                 <span>Total:</span>
-                <span>₹{order.totalPrice}</span>
+                <span>₹{order.totalPrice + 10}</span>
               </div>
 
               <div className="mt-2 text-sm text-gray-600">

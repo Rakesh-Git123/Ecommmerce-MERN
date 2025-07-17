@@ -15,7 +15,6 @@ const Orders = () => {
           Authorization: localStorage.getItem('token'),
         },
       });
-      console.log(response.data.orders);
       setOrders(response.data.orders || []);
       setLoading(false);
     } catch (err) {
@@ -98,11 +97,18 @@ const Orders = () => {
                     <span>₹{item.price * item.quantity}</span>
                   </div>
                 ))}
+
+        
+                <div className="flex justify-between text-sm text-gray-700 mt-2">
+                  <span>Shipping Fee</span>
+                  <span>₹10</span>
+                </div>
               </div>
 
+  
               <div className="flex justify-between mt-4 font-semibold text-lg">
-                <span>Total:</span>
-                <span>₹{order.totalPrice}</span>
+                <span>Total (incl. ₹10 shipping):</span>
+                <span>₹{order.totalPrice + 10}</span>
               </div>
 
               <div className="mt-2 text-sm text-gray-600">

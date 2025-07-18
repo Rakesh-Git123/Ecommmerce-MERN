@@ -3,6 +3,7 @@ import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AdminFooter from "../components/AdminFooter";
 
 const Users = () => {
   const [Allusers, setAllUsers] = useState([]);
@@ -87,9 +88,10 @@ const Users = () => {
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <AdminNavbar />
-      <div className="container mx-auto px-4 py-10">
+
+      <main className="flex-grow container mx-auto px-4 py-10">
         <div className="bg-white shadow-xl rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200 bg-blue-50">
             <h2 className="text-2xl font-semibold text-blue-800">
@@ -154,8 +156,10 @@ const Users = () => {
             )}
           </div>
         </div>
-      </div>
-    </>
+      </main>
+
+      <AdminFooter />
+    </div>
   );
 };
 

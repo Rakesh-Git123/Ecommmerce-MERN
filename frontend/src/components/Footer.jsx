@@ -31,7 +31,7 @@ const Footer = () => {
             <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-white">Categories</h3>
             <ul className="space-y-1 md:space-y-2 text-xs sm:text-sm">
               <li 
-                onClick={()=>fetchProducts({category:"clothes"})} 
+                onClick={()=>{fetchProducts({category:"clothes"})}} 
                 className="hover:text-white transition cursor-pointer"
               >
                 Clothes

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../components/AdminNavbar";
 import { AuthContext } from "../Context/AuthContext";
+import AdminFooter from "../components/AdminFooter";
 
 const AdminDashboard = () => {
   const { user, checkAuth } = useContext(AuthContext);
@@ -213,7 +214,7 @@ const AdminDashboard = () => {
       ) : (
         <>
           <AdminNavbar />
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-gray-800">
@@ -752,6 +753,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+      <AdminFooter/>
     </>
   );
 };

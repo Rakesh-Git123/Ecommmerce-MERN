@@ -4,9 +4,11 @@ import axios from "axios";
 import UserNavbar from "../components/UserNavbar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../Context/CartContext";
 
 const Profile = () => {
   const { user, checkAuth } = useContext(AuthContext);
+  const {fetchCart} = useContext(CartContext);
 
   const [editImage, setEditImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -20,7 +22,11 @@ const Profile = () => {
       setName(user.name);
     }
   }, [user]);
-
+  
+  useEffect(()=>{
+    fetchCart();
+  },[])
+  
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];

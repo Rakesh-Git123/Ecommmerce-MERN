@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminNavbar from '../components/AdminNavbar';
 import Footer from '../components/Footer';
 import { AuthContext } from '../Context/AuthContext';
+import AdminFooter from '../components/AdminFooter';
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -129,7 +130,7 @@ const AdminOrders = () => {
         )}
       </div>
 
-      <Footer />
+      <AdminFooter />
     </div>
   );
 };

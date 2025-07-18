@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import UserNavbar from '../components/UserNavbar';
 import Footer from '../components/Footer';
+import { CartContext } from '../Context/CartContext';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {fetchCart} = useContext(CartContext);
 
   const fetchOrders = async () => {
     try {
@@ -25,6 +27,7 @@ const Orders = () => {
 
   useEffect(() => {
     fetchOrders();
+    fetchCart()
   }, []);
 
   if (loading) {

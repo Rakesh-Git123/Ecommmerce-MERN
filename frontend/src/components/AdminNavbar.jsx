@@ -134,7 +134,7 @@ const AdminNavbar = () => {
               Products
             </Link>
             <Link
-              to="/admin/orders"
+              to="/admin/order"
               onClick={toggleMobileMenu}
               className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/admin/orders')}`}
             >

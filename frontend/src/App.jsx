@@ -1,20 +1,23 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import { AuthProvider } from "./Context/AuthContext";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgetPassword from "./pages/ForgetPassword";
-import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "./pages/Dashboard";
-import Users from "./pages/Users";
 import { CartProvider } from "./Context/CartContext";
-import Cart from "./pages/Cart";
 import { ProductProvider } from "./Context/ProductContext";
-import Profile from "./pages/Profile";
-import PlaceOrder from "./pages/PlaceOrder";
-import OrderSuccess from "./pages/OrderSuccess";
-import Orders from "./pages/Orders";
-import AdminOrders from "./pages/AdminOrders";
+import ProtectedRoute from "./ProtectedRoute";
+
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Users = lazy(() => import("./pages/Users"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Profile = lazy(() => import("./pages/Profile"));
+const PlaceOrder = lazy(() => import("./pages/PlaceOrder"));
+const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
+const Orders = lazy(() => import("./pages/Orders"));
+const AdminOrders = lazy(() => import("./pages/AdminOrders"));
+
 function App() {
   return (
     <div>
@@ -22,74 +25,75 @@ function App() {
         <AuthProvider>
           <CartProvider>
             <ProductProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forget-password" element={<ForgetPassword />} />
-            <Route
-              path="/"
-              element={
-                  <Dashboard />
-              }
-            />
-            <Route
-              path="/cart"
-              element={
-                <ProtectedRoute>
-                  <Cart />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/place-order"
-              element={
-                <ProtectedRoute>
-                  <PlaceOrder/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/order"
-              element={
-                <ProtectedRoute>
-                  <Orders/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/order-success"
-              element={
-                <ProtectedRoute>
-                  <OrderSuccess/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoute>
-                  <Users />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/order"
-              element={
-                <ProtectedRoute>
-                  <AdminOrders />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-          </ProductProvider>
+              <Suspense fallback={
+                <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              }>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/forget-password" element={<ForgetPassword />} />
+                  <Route path="/" element={<Dashboard />} />
+                  <Route
+                    path="/cart"
+                    element={
+                      <ProtectedRoute>
+                        <Cart />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <Profile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/place-order"
+                    element={
+                      <ProtectedRoute>
+                        <PlaceOrder />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/order"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/order-success"
+                    element={
+                      <ProtectedRoute>
+                        <OrderSuccess />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <ProtectedRoute>
+                        <Users />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/order"
+                    element={
+                      <ProtectedRoute>
+                        <AdminOrders />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </Suspense>
+            </ProductProvider>
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>

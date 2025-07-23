@@ -2,6 +2,7 @@ import User from "../models/user.model.js"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js"
+import nodemailer from 'nodemailer';
 
 export const signup=async(req,res)=>{
 
@@ -63,29 +64,73 @@ export const login = async (req, res) => {
   }
 };
 
-export const forgetPassword = async (req, res) => {
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS,  
+  },
+});
+
+export const requestPasswordReset = async (req, res) => {
   try {
-    const { email, oldPassword, newPassword } = req.body;
+    const { email } = req.body;
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
 
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Old password is incorrect' });
-    }
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
-    user.password = hashedPassword;
+    // Generate OTP (6 digits)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpires = Date.now() + 15 * 60 * 1000; // 15 minutes expiry
     await user.save();
 
-    res.status(200).json({ success: true, message: 'Password updated successfully' });
+    // Send OTP email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is ${otp}. It will expire in 15 minutes.`,
+    });
+
+    res.status(200).json({ success: true, message: 'OTP sent to email' });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error(err.message);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+export const resetPasswordWithOtp = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (!user.otp || user.otp !== otp) {
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+
+    if (Date.now() > user.otpExpires) {
+      return res.status(400).json({ success: false, message: 'OTP expired' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    user.otp = undefined;
+    user.otpExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password reset successful' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 
 export const checkAuth = (req, res) => {
   try {

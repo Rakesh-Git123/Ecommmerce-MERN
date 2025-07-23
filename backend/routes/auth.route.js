@@ -1,7 +1,7 @@
 import express from "express";
 import isAuthenticated from "../middlewares/authenticate.js";
 import isAdmin from "../middlewares/isAdmin.js";
-import {  login, signup, forgetPassword, getAllUsers, deleteUser, checkAuth, updateProfile } from "../controllers/auth.controller.js";
+import {  login, signup, getAllUsers, deleteUser, checkAuth, updateProfile, requestPasswordReset, resetPasswordWithOtp } from "../controllers/auth.controller.js";
 
 const router=express.Router();
 import multer from 'multer'
@@ -10,7 +10,8 @@ const upload = multer({ storage });
 
 router.post("/signup",signup);
 router.post("/login",login);
-router.patch("/forgetPassword",forgetPassword)
+router.post("/sendOtp",requestPasswordReset)
+router.patch("/forgetPassword",resetPasswordWithOtp)
 router.get("/checkAuth",isAuthenticated,checkAuth)
 router.patch("/updateProfile",isAuthenticated,upload.single("profilePic"), updateProfile)
 

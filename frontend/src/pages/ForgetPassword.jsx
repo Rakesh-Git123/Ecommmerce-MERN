@@ -7,16 +7,19 @@ import { AuthContext } from "../Context/AuthContext";
 const ForgetPassword = () => {
   const { setCart } = useContext(CartContext);
   const { checkAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const [step, setStep] = useState(1); // Step 1 = Request OTP, Step 2 = Reset with OTP
   const [formData, setFormData] = useState({
     email: "",
-    oldPassword: "",
+    otp: "",
     newPassword: "",
     confirmNewPassword: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -25,14 +28,35 @@ const ForgetPassword = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleRequestOtp = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    // Client-side validation
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        "https://ecommmerce-mern.onrender.com/api/auth/sendOtp",
+        { email: formData.email }
+      );
+      if (res.data.success) {
+        setSuccess("OTP sent to your email.");
+        setStep(2);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
     if (formData.newPassword !== formData.confirmNewPassword) {
-      return setError("New passwords don't match");
+      return setError("Passwords do not match");
     }
 
     if (formData.newPassword.length < 6) {
@@ -41,197 +65,141 @@ const ForgetPassword = () => {
 
     try {
       setLoading(true);
-      const { email, oldPassword, newPassword } = formData;
-
-      const response = await axios.patch(
+      const res = await axios.post(
         "https://ecommmerce-mern.onrender.com/api/auth/forgetPassword",
         {
-          email,
-          oldPassword,
-          newPassword,
+          email: formData.email,
+          otp: formData.otp,
+          newPassword: formData.newPassword,
         }
       );
-
-      if (response.data.success) {
-        setSuccess("Password updated successfully!");
-        alert("Password updated successfully!")
+      if (res.data.success) {
+        alert("Password reset successful!");
         localStorage.removeItem("token");
         setCart([]);
         checkAuth();
         navigate("/login");
-        setFormData({
-          email: "",
-          oldPassword: "",
-          newPassword: "",
-          confirmNewPassword: "",
-        });
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Failed to update password"
-      );
+      setError(err.response?.data?.message || "Password reset failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset Your Password
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Please enter your email and passwords to update your account
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow">
+        <h2 className="text-2xl font-semibold text-center mb-4">
+          {step === 1 ? "Request OTP" : "Reset Your Password"}
+        </h2>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+          <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
             {success}
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="oldPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Current Password
-              </label>
-              <input
-                id="oldPassword"
-                name="oldPassword"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={formData.oldPassword}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="newPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                New Password
-              </label>
-              <input
-                id="newPassword"
-                name="newPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={formData.newPassword}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Must be at least 6 characters
-              </p>
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmNewPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Confirm New Password
-              </label>
-              <input
-                id="confirmNewPassword"
-                name="confirmNewPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={formData.confirmNewPassword}
-                onChange={handleChange}
-                className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-          </div>
-
+        <form
+          className="space-y-4"
+          onSubmit={step === 1 ? handleRequestOtp : handleResetPassword}
+        >
           <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Updating...
-                </>
-              ) : (
-                "Update Password"
-              )}
-            </button>
+            <label className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
+
+          {step === 2 && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  OTP
+                </label>
+                <input
+                  type="text"
+                  name="otp"
+                  required
+                  value={formData.otp}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                />
+                <button
+                  type="button"
+                  onClick={handleRequestOtp}
+                  disabled={loading}
+                  className="mt-2 text-sm text-indigo-600 hover:underline"
+                >
+                  {loading ? "Sending OTP..." : "Generate New OTP"}
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  required
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Confirm New Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmNewPassword"
+                  required
+                  value={formData.confirmNewPassword}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-2 px-4 bg-indigo-600 text-white rounded hover:bg-indigo-700 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {loading
+              ? "Processing..."
+              : step === 1
+              ? "Send OTP"
+              : "Reset Password"}
+          </button>
         </form>
 
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Remember your password?{" "}
-            <button
-              onClick={() => navigate("/login")}
-              className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none"
-            >
-              Sign in
-            </button>
-          </p>
+        <div className="text-center mt-4">
+          <button
+            className="text-indigo-600 hover:underline text-sm"
+            onClick={() => navigate("/login")}
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     </div>

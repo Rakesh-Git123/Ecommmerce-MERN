@@ -9,7 +9,6 @@ const ForgetPassword = () => {
   const { checkAuth } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // Step 1 = Request OTP, Step 2 = Reset with OTP
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
@@ -28,10 +27,13 @@ const ForgetPassword = () => {
     });
   };
 
-  const handleRequestOtp = async (e) => {
-    e.preventDefault();
+  const handleGenerateOtp = async () => {
     setError("");
     setSuccess("");
+
+    if (!formData.email) {
+      return setError("Please enter your email first.");
+    }
 
     try {
       setLoading(true);
@@ -41,7 +43,6 @@ const ForgetPassword = () => {
       );
       if (res.data.success) {
         setSuccess("OTP sent to your email.");
-        setStep(2);
       }
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send OTP");
@@ -65,7 +66,7 @@ const ForgetPassword = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
+      const res = await axios.patch(
         "https://ecommmerce-mern.onrender.com/api/auth/forgetPassword",
         {
           email: formData.email,
@@ -91,7 +92,7 @@ const ForgetPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white p-6 rounded-lg shadow">
         <h2 className="text-2xl font-semibold text-center mb-4">
-          {step === 1 ? "Request OTP" : "Reset Your Password"}
+          Reset Your Password
         </h2>
 
         {error && (
@@ -106,10 +107,7 @@ const ForgetPassword = () => {
           </div>
         )}
 
-        <form
-          className="space-y-4"
-          onSubmit={step === 1 ? handleRequestOtp : handleResetPassword}
-        >
+        <form className="space-y-4" onSubmit={handleResetPassword}>
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email Address
@@ -124,59 +122,55 @@ const ForgetPassword = () => {
             />
           </div>
 
-          {step === 2 && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  OTP
-                </label>
-                <input
-                  type="text"
-                  name="otp"
-                  required
-                  value={formData.otp}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-                <button
-                  type="button"
-                  onClick={handleRequestOtp}
-                  disabled={loading}
-                  className="mt-2 text-sm text-indigo-600 hover:underline"
-                >
-                  {loading ? "Sending OTP..." : "Generate New OTP"}
-                </button>
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              OTP
+            </label>
+            <input
+              type="text"
+              name="otp"
+              required
+              value={formData.otp}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+            <button
+              type="button"
+              onClick={handleGenerateOtp}
+              disabled={loading}
+              className="mt-2 text-sm text-indigo-600 hover:underline"
+            >
+              {loading ? "Sending OTP..." : "Generate OTP"}
+            </button>
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  required
-                  value={formData.newPassword}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              New Password
+            </label>
+            <input
+              type="password"
+              name="newPassword"
+              required
+              value={formData.newPassword}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  name="confirmNewPassword"
-                  required
-                  value={formData.confirmNewPassword}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              name="confirmNewPassword"
+              required
+              value={formData.confirmNewPassword}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
 
           <button
             type="submit"
@@ -185,11 +179,7 @@ const ForgetPassword = () => {
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading
-              ? "Processing..."
-              : step === 1
-              ? "Send OTP"
-              : "Reset Password"}
+            {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
 
